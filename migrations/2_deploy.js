@@ -18,4 +18,3 @@ module.exports = async function (deployer) {
   await token.transferMinterRole(dbank.address);
 };
 
-// const token = await Token.deployed()
