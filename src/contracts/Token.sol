@@ -17,7 +17,7 @@ contract Token is ERC20 {
   }
 
   // add ability to transfer minter role eg: from deployer => bank
-  function transferMinterRole(address dBank) public {
+  function transferMinterRole(address dBank) public returns (bool) {
     require(msg.sender == minter, "Error: mesg.sender is not a minter, only a minter can transfer mintership");
     minter = dBank;
 
