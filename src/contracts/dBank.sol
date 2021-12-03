@@ -5,15 +5,16 @@ import "./Token.sol";
 
 contract dBank {
 
-  //assign Token contract to variable
-
+  // store Token in private state variable 
+  Token private token;
   //add mappings
 
   //add events
 
-  //pass as constructor argument deployed Token contract
-  constructor() public {
-    //assign token deployed contract to variable
+  // pass address of token on the network as argument
+  constructor(Token _token) public { // constructor is ran whenever contract is deployed to the network
+    // create a local token variable and assign it to state token variable 
+    token = _token;
   }
 
   function deposit() payable public {
