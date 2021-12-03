@@ -7,10 +7,14 @@ contract dBank {
 
   // store Token in private state variable 
   Token private token;
-  //add mappings
+  // add mappings to store eth balance (mapping: key/value pair storage)
+  mapping(address => uint) public etherBalanceOf;
+  mapping(address => uint) public depositStart;
+  mapping(address => bool) public isDeposited;
 
-  //add events
 
+  // add events
+  event Deposit(address indexed user, uint etherAmount, uint timeStart);
   // pass address of token on the network as argument
   constructor(Token _token) public { // constructor is ran whenever contract is deployed to the network
     // create a local token variable and assign it to state token variable 
@@ -18,14 +22,21 @@ contract dBank {
   }
 
   function deposit() payable public {
-    //check if msg.sender didn't already deposited funds
-    //check if msg.value is >= than 0.01 ETH
+    // reject deposit if it's already deposited
+    require(isDeposited[msg.sender] == true, "Error: already deposited!");
+    require(msg.value >= 1e16, "Error: deposit must be >= 0.01 ETH");
+    // store address of person who deposits/makes transaction as key, transaction eth amount as value
+    // get current sender's balance (existing balance + transaction value)
+    etherBalanceOf[msg.sender] = etherBalanceOf[msg.sender] + msg.value;
 
-    //increase msg.sender ether deposit balance
-    //start msg.sender hodling time
+    // get deposit start time using timestamp on the block
+    depositStart[msg.sender] = depositStart[msg.sender] + block.timestamp;
 
-    //set msg.sender deposit status to true
-    //emit Deposit event
+    // set msg.sender deposit status to true
+    isDeposited[msg.sender] = true;
+
+    // emit Deposit event
+    emit Deposit(msg.sender, msg.value, block.timestamp);
   }
 
   function withdraw() public {

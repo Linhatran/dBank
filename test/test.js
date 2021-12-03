@@ -14,7 +14,7 @@ contract('dBank', ([deployer, user]) => {
   beforeEach(async () => {
     token = await Token.new()
     dbank = await DecentralizedBank.new(token.address)
-    await token.passMinterRole(dbank.address, {from: deployer})
+    await token.transferMinterRole(dbank.address, {from: deployer})
   })
 
   describe('testing token contract...', () => {
@@ -38,7 +38,7 @@ contract('dBank', ([deployer, user]) => {
 
     describe('failure', () => {
       it('passing minter role should be rejected', async () => {
-        await token.passMinterRole(user, {from: deployer}).should.be.rejectedWith(EVM_REVERT)
+        await token.transferMinterRole(user, {from: deployer}).should.be.rejectedWith(EVM_REVERT)
       })
 
       it('tokens minting should be rejected', async () => {

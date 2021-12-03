@@ -11,7 +11,7 @@ contract Token is ERC20 {
   // add minter changed event
   event MinterChanged(address indexed from, address to);
 
-  constructor() public payable ERC20("Decentralized Bank Currency", "DCB") { // payable so we can send funds
+  constructor() public payable ERC20("Decentralized Bank Currency", "DBC") { // payable so we can send funds
     // assign minter to sender
     minter = msg.sender;
   }
