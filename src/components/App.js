@@ -15,7 +15,6 @@ const App = ({ dispatch }) => {
   const [dbankAddress, setDbankAddress] = useState(null);
 
   const loadBlockChainData = async (dispatch) => {
-    console.log('loading', dispatch);
     if (typeof window.ethereum) {
       const web3 = new Web3(window.ethereum);
       const netId = await web3.eth.net.getId();
@@ -53,11 +52,9 @@ const App = ({ dispatch }) => {
       window.alert('Please install Metamask');
     }
   };
-  
+
   useEffect(() => {
-    (async () => {
-      await loadBlockChainData(dispatch);
-    })();
+    loadBlockChainData(dispatch);
   }, [dispatch]);
 
   const deposit = async (amount) => console.log('deposited', amount);
@@ -79,15 +76,23 @@ const App = ({ dispatch }) => {
       </nav>
       <div className='container-fluid mt-5 text-center'>
         <br></br>
-        <h1>{/*add welcome msg*/}</h1>
-        <h2>{/*add user address*/}</h2>
+        <h1>Welcome to dBank!</h1>
+        <h2>Your account is: {account}</h2>
         <br></br>
         <div className='row'>
           <main role='main' className='col-lg-12 d-flex text-center'>
             <div className='content mr-auto ml-auto'>
               <Tabs defaultActiveKey='profile' id='uncontrolled-tab-example'>
-                {/*add Tab deposit*/}
-                {/*add Tab withdraw*/}
+                <Tab eventKey='deposit' title='Deposit'>
+                  <div>
+                    <br></br> How much you want to deposit?
+                  </div>
+                </Tab>
+                <Tab eventKey='withdraw' title='Withdraw'>
+                  <div>
+                    <br></br> Do you want to withdraw and earn interest in tokens?
+                  </div>
+                </Tab>
               </Tabs>
             </div>
           </main>
