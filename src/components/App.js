@@ -10,9 +10,10 @@ const App = ({ dispatch }) => {
   const [web3, setWeb3] = useState(null);
   const [account, setAccount] = useState('');
   const [token, setToken] = useState(null);
-  const [dBankInfo, setDBankInfo] = useState(null);
+  const [dbank, setDbank] = useState(null);
   const [balance, setBalance] = useState(0);
   const [dbankAddress, setDbankAddress] = useState(null);
+  const [depositAmount, setDepositAmount] = useState(0);
 
   const loadBlockChainData = async (dispatch) => {
     if (typeof window.ethereum) {
@@ -43,7 +44,7 @@ const App = ({ dispatch }) => {
           dBank.networks[netId].address
         );
         const bankAddress = dBank.networks[netId].address;
-        bank && setDBankInfo(bank) && setDbankAddress(bankAddress);
+        bank && setDbank(bank) && setDbankAddress(bankAddress);
       } catch (e) {
         console.log('Error', e);
         window.alert('Contracts not deployed to the current network');
@@ -57,8 +58,20 @@ const App = ({ dispatch }) => {
     loadBlockChainData(dispatch);
   }, [dispatch]);
 
-  const deposit = async (amount) => console.log('deposited', amount);
-
+  const deposit = async (amount) => {
+    if (dbank) {
+      try {
+        dbank.methods
+          .deposit()
+          .send({ value: amount.toString(), from: account });
+      } catch (e) {
+        console.log('Deposit Error:', e);
+        window.alert(
+          'Something went wrong while depositng your ETH. Please try again!'
+        );
+      }
+    }
+  };
   const withdraw = async (e) => console.log('withdraw', e);
 
   return (
@@ -85,12 +98,43 @@ const App = ({ dispatch }) => {
               <Tabs defaultActiveKey='profile' id='uncontrolled-tab-example'>
                 <Tab eventKey='deposit' title='Deposit'>
                   <div>
-                    <br></br> How much you want to deposit?
+                    <p>
+                      How much you want to deposit?{' '}
+                      <small>(min. amount is 0.01 ETH)</small>
+                    </p>
+
+                    <p> Only 1 deposit is possible at a time!</p>
+                    <form
+                      onSubmit={(e) => {
+                        e.preventDefault();
+                        deposit(depositAmount);
+                      }}
+                    >
+                      <div className='form-group mr-sm-2'>
+                        <br></br>
+                        <input
+                          id='depositAmount'
+                          type='number'
+                          step='0.01'
+                          min='0'
+                          placeholder='amount...'
+                          className='form-control form-control-md'
+                          required
+                          onChange={(e) =>
+                            setDepositAmount(e.target.value * 10 ** 18)
+                          }
+                        />
+                      </div>
+                      <button type='submit' className='btn btn-primary'>
+                        DEPOSIT
+                      </button>
+                    </form>
                   </div>
                 </Tab>
                 <Tab eventKey='withdraw' title='Withdraw'>
                   <div>
-                    <br></br> Do you want to withdraw and earn interest in tokens?
+                    <br></br> Do you want to withdraw and earn interest in
+                    tokens?
                   </div>
                 </Tab>
               </Tabs>
