@@ -45,6 +45,9 @@ const App = ({ dispatch }) => {
         );
         const bankAddress = dBank.networks[netId].address;
         bank && setDbank(bank) && setDbankAddress(bankAddress);
+
+        const tokenBalance = await token.methods.balanceOf(accounts[0]).call();
+        console.log('Token Balance:', web3.utils.fromWei(tokenBalance));
       } catch (e) {
         console.log('Error', e);
         window.alert('Contracts not deployed to the current network');
@@ -72,7 +75,17 @@ const App = ({ dispatch }) => {
       }
     }
   };
-  const withdraw = async (e) => console.log('withdraw', e);
+  const withdraw = async (e) => {
+    e.preventDefault();
+    if (dbank) {
+      try {
+        dbank.methods.withdraw().send({ from: account });
+      } catch (e) {
+        console.log('Error Withdaw:', e);
+        window.alert('Could not withdraw. Please try again!');
+      }
+    }
+  };
 
   return (
     <div className='text-monospace'>
@@ -135,6 +148,15 @@ const App = ({ dispatch }) => {
                   <div>
                     <br></br> Do you want to withdraw and earn interest in
                     tokens?
+                    <br></br>
+                    <br></br>
+                    <button
+                      type='submit'
+                      className='btn btn-primary'
+                      onClick={(e) => withdraw(e)}
+                    >
+                      CONFIRM
+                    </button>
                   </div>
                 </Tab>
               </Tabs>
